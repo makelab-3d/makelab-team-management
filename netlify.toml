@@ -3,6 +3,12 @@
   publish = "dist"
   functions = "netlify/functions"
 
+[dev]
+  command = "vite"
+  targetPort = 5173
+  port = 8888
+  autoLaunch = false
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
@@ -12,4 +18,4 @@
   schedule = "0 5 * * *"
 
 [functions."reminder-cron"]
-  schedule = "0 14 * * *"
+  schedule = "0 14 * * 5"

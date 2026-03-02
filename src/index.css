@@ -1,5 +1,5 @@
 /* ============================================================
-   Makelab Time Tracker — Styles
+   Makelab Team Management — Styles
    Mobile-first, Makelab brand (yellow accent, clean design)
    ============================================================ */
 
@@ -50,7 +50,7 @@ a { color: var(--accent-text); text-decoration: none; }
   display: flex;
   flex-direction: column;
   min-height: 100dvh;
-  max-width: 480px;
+  max-width: 960px;
   margin: 0 auto;
   background: var(--bg);
 }
@@ -59,7 +59,7 @@ a { color: var(--accent-text); text-decoration: none; }
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 14px 16px;
+  padding: 14px 20px;
   background: var(--text);
   color: #fff;
   position: sticky;
@@ -93,10 +93,11 @@ a { color: var(--accent-text); text-decoration: none; }
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
-  max-width: 480px;
+  max-width: 960px;
   display: flex;
   background: var(--bg-card);
-  border-top: 1px solid var(--border);
+  border-top: 2px solid var(--border);
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.06);
   padding: 6px 0;
   padding-bottom: env(safe-area-inset-bottom, 6px);
   z-index: 100;
@@ -425,9 +426,42 @@ a { color: var(--accent-text); text-decoration: none; }
 }
 
 .period-status.open { background: var(--accent-light); color: var(--accent-text); }
-.period-status.locked { background: #fef3c7; color: #92400e; }
-.period-status.approved { background: #dcfce7; color: #166534; }
-.period-status.synced { background: #e0e7ff; color: #3730a3; }
+.period-status.closed { background: var(--bg-input); color: var(--text-muted); }
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0 4px;
+  border-top: 1px solid var(--border);
+  margin-top: 8px;
+}
+.btn-page {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+.btn-page:hover:not(:disabled) { background: var(--bg-hover); }
+.btn-page:disabled { color: var(--text-muted); cursor: default; }
+.page-info { font-size: 13px; color: var(--text-muted); }
+
+/* Back button */
+.btn-back {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 4px 0;
+}
+.btn-back:hover { color: var(--text); }
 
 /* History */
 .history-list { list-style: none; }
@@ -466,6 +500,147 @@ a { color: var(--accent-text); text-decoration: none; }
 .profile-value { font-size: 14px; font-weight: 500; }
 
 /* Admin */
+.admin-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.admin-tab {
+  flex: 1;
+  padding: 10px 0;
+  border: none;
+  background: var(--bg-card);
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.admin-tab + .admin-tab { border-left: 1px solid var(--border); }
+
+.admin-tab.active {
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
+.admin-kpis {
+  display: flex;
+  gap: 8px;
+}
+
+.admin-kpi {
+  flex: 1;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  text-align: center;
+}
+
+.admin-kpi-value {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.admin-kpi-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+
+.admin-kpi.kpi-alert {
+  background: #fef3c7;
+  border-color: #f59e0b;
+}
+
+.admin-kpi.kpi-alert .admin-kpi-value { color: #92400e; }
+.admin-kpi.kpi-alert .admin-kpi-label { color: #92400e; }
+
+.admin-emp-row {
+  border-bottom: 1px solid var(--border);
+}
+
+.admin-emp-row:last-child { border-bottom: none; }
+
+.admin-emp-row-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  cursor: pointer;
+}
+
+.admin-emp-name {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.admin-emp-title-pill {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #6b21a8;
+  background: #f3e8ff;
+  padding: 2px 10px;
+  border-radius: 20px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.admin-emp-meta {
+  font-size: 12px;
+  color: var(--text);
+  margin-top: 2px;
+}
+
+.admin-emp-status {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.admin-emp-status.active { background: #dcfce7; color: #166534; }
+.admin-emp-status.inactive { background: #fee2e2; color: #991b1b; }
+
+.admin-emp-detail {
+  padding: 0 0 12px;
+}
+
+.admin-period-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+
+.admin-period-row:last-child { border-bottom: none; }
+
+.admin-period-row.is-closed {
+  opacity: 0.45;
+}
+
+.admin-period-row.is-closed:hover {
+  opacity: 0.7;
+}
+
+.admin-period-row.is-closed span[style] {
+  color: var(--text-muted) !important;
+}
+
 .admin-employee-card { margin-bottom: 12px; }
 
 .admin-employee-header {
@@ -482,6 +657,145 @@ a { color: var(--accent-text); text-decoration: none; }
   display: flex;
   gap: 8px;
   margin-top: 12px;
+}
+
+/* Year filter */
+.year-filter {
+  display: flex;
+  gap: 6px;
+  margin: 12px 0;
+  flex-wrap: wrap;
+}
+
+.year-btn {
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--bg-card);
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.year-btn:hover { background: var(--bg-hover); }
+
+.year-btn.active {
+  background: var(--accent);
+  color: var(--accent-text);
+  border-color: var(--accent);
+}
+
+/* Admin timesheet table */
+.timesheet-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.timesheet-table th,
+.timesheet-table td {
+  padding: 8px 6px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+}
+
+.timesheet-table th {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  position: sticky;
+  top: 0;
+  background: var(--bg-card);
+  z-index: 1;
+}
+
+.timesheet-table tbody tr:last-child td { border-bottom: none; }
+
+.sticky-col {
+  position: sticky;
+  left: 0;
+  background: var(--bg-card);
+  z-index: 2;
+  text-align: left !important;
+  min-width: 110px;
+  border-right: 1px solid var(--border);
+}
+
+.table-emp-name {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.table-emp-rate {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.has-hours { background: var(--accent-light); }
+
+.cell-hours { display: flex; flex-direction: column; align-items: center; gap: 1px; }
+.cell-net { font-weight: 600; font-size: 13px; }
+.cell-break { font-size: 9px; color: var(--text-muted); }
+.cell-times { font-size: 10px; color: var(--text-muted); }
+.cell-empty { color: var(--text-muted); font-size: 11px; }
+.cell-total { font-weight: 700; font-size: 13px; background: var(--bg-input); }
+.cell-clickable { cursor: pointer; }
+.cell-clickable:hover { background: rgba(255, 204, 0, 0.25); }
+
+/* Period list stats */
+.period-stats {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.period-stat {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.period-stat strong {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+/* Admin status banner */
+.admin-status-banner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.status-item {
+  font-size: 14px;
+  color: var(--text-secondary);
+  padding: 8px 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.status-item strong {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.status-item.status-alert {
+  background: #fef3c7;
+  border-color: #f59e0b;
+  color: #92400e;
+}
+
+.status-item.status-alert strong {
+  color: #92400e;
 }
 
 /* Toast */
@@ -528,6 +842,493 @@ a { color: var(--accent-text); text-decoration: none; }
   justify-content: flex-end;
 }
 
+/* ============================================================
+   Employee Calendar Grid
+   ============================================================ */
+.emp-summary {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.emp-summary-item {
+  flex: 1;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 8px;
+  text-align: center;
+}
+
+.emp-summary-value {
+  display: block;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.emp-summary-label {
+  display: block;
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-top: 2px;
+}
+
+.cal-grid {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  box-shadow: var(--shadow);
+}
+
+.cal-dow-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.cal-dow {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  padding: 4px 0;
+}
+
+.cal-cells {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.cal-cell {
+  aspect-ratio: 1;
+  border-radius: var(--radius-sm);
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s;
+  border: 2px solid transparent;
+  position: relative;
+  min-height: 52px;
+}
+
+.cal-cell:hover { background: var(--bg-hover); }
+.cal-cell.cal-empty { cursor: default; background: none; }
+.cal-cell.cal-empty:hover { background: none; }
+
+.cal-date {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.cal-cell.cal-weekend { opacity: 0.4; }
+.cal-cell.cal-weekend .cal-date { font-weight: 400; }
+
+.cal-cell.cal-today {
+  border-color: var(--accent);
+  background: var(--accent-light);
+}
+
+.cal-cell.cal-scheduled {
+  background: #f0f7ff;
+}
+
+.cal-cell.cal-logged {
+  background: #dcfce7;
+}
+
+.cal-cell.cal-selected {
+  border-color: var(--text);
+  box-shadow: 0 0 0 1px var(--text);
+}
+
+.cal-entry-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 2px;
+}
+
+.cal-hours {
+  font-size: 12px;
+  font-weight: 700;
+  color: #166534;
+  line-height: 1.2;
+}
+
+.cal-times {
+  font-size: 8px;
+  color: var(--text-muted);
+  line-height: 1.2;
+}
+
+.cal-scheduled-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #93c5fd;
+  margin-top: 4px;
+}
+
+/* Calendar legend */
+.cal-legend {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 10px;
+  margin-bottom: 16px;
+}
+
+.cal-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.cal-legend-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+.swatch-logged { background: #dcfce7; border: 1px solid #bbf7d0; }
+.swatch-scheduled { background: #f0f7ff; border: 1px solid #dbeafe; }
+.swatch-today { background: var(--accent-light); border: 2px solid var(--accent); }
+
+/* Entry panel */
+.entry-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+  margin-top: 12px;
+}
+
+.entry-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.entry-panel-date {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.entry-panel-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* ============================================================
+   Schedule Components (admin + employee)
+   ============================================================ */
+.schedule-editor {
+  background: var(--bg-card);
+  border-radius: var(--radius-sm);
+}
+
+.schedule-display {
+  text-align: center;
+}
+
+.schedule-days-row {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+}
+
+.schedule-day-chip {
+  width: 36px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  background: var(--bg-input);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.schedule-day-chip:hover { background: var(--bg-hover); }
+
+.schedule-day-chip.active {
+  background: var(--accent);
+  color: var(--accent-text);
+  border-color: var(--accent);
+}
+
+.schedule-time-display {
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+/* ============================================================
+   Employee Type Badges
+   ============================================================ */
+.emp-type-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.emp-type-badge.hourly { background: #dbeafe; color: #1e40af; }
+.emp-type-badge.salary { background: #dcfce7; color: #166534; }
+.emp-type-badge.contract { background: #fef3c7; color: #92400e; }
+.emp-type-badge.intern { background: #f3e8ff; color: #7c3aed; }
+
+/* ============================================================
+   Password Display Box
+   ============================================================ */
+.password-box {
+  background: #fefce8;
+  border: 2px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  text-align: center;
+}
+
+.password-box-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.password-box-value {
+  font-size: 20px;
+  font-weight: 700;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  user-select: all;
+}
+
+/* ============================================================
+   Schedule Planning Page
+   ============================================================ */
+.sched-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sched-toggle {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.sched-toggle-btn {
+  padding: 6px 16px;
+  border: none;
+  background: var(--bg-card);
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.sched-toggle-btn + .sched-toggle-btn { border-left: 1px solid var(--border); }
+
+.sched-toggle-btn.active {
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
+.sched-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sched-week-label {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+/* Weekly grid table */
+.sched-grid {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.sched-grid th,
+.sched-grid td {
+  padding: 6px 4px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+}
+
+.sched-grid th {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  background: var(--bg-card);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.sched-th-date {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.sched-today-col {
+  background: rgba(0, 0, 0, 0.06) !important;
+}
+
+.sched-name-col {
+  text-align: left !important;
+  width: 1%;
+  white-space: nowrap;
+  padding-left: 12px !important;
+  position: sticky;
+  left: 0;
+  background: var(--bg-card);
+  z-index: 2;
+  border-right: 1px solid var(--border);
+}
+
+.sched-emp-name {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.sched-title-col {
+  text-align: left !important;
+  width: 1%;
+  white-space: nowrap;
+  padding-left: 8px !important;
+  padding-right: 12px !important;
+  border-right: 1px solid var(--border);
+}
+
+.sched-emp-pill {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.sched-emp-inline {
+  display: flex;
+  align-items: center;
+}
+
+.sched-dept-col {
+  width: 28px;
+  min-width: 28px;
+  max-width: 28px;
+  padding: 0 !important;
+}
+
+.sched-dept-label {
+  position: relative;
+  width: 28px;
+  min-width: 28px;
+  max-width: 28px;
+  padding: 0 !important;
+  border-right: 2px solid rgba(0,0,0,0.08);
+  border-bottom: 2px solid var(--bg-card) !important;
+  vertical-align: middle;
+}
+
+.sched-dept-label span {
+  display: block;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  text-align: center;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  padding: 8px 0;
+  margin: 0 auto;
+}
+
+.sched-grid tbody td {
+  padding: 6px 8px;
+}
+
+.sched-cell {
+  min-width: 64px;
+}
+
+.sched-cell.filled {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.sched-shift {
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Daily view */
+.sched-daily-summary {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.sched-daily-emp {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.sched-daily-emp:last-child { border-bottom: none; }
+
+.sched-daily-time {
+  font-size: 13px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
 /* Utilities */
 .text-muted { color: var(--text-muted); }
 .text-center { text-align: center; }
@@ -537,11 +1338,694 @@ a { color: var(--accent-text); text-decoration: none; }
 .mb-8 { margin-bottom: 8px; }
 .mb-12 { margin-bottom: 12px; }
 
-/* Responsive — desktop gets centered card */
-@media (min-width: 481px) {
+/* ============================================================
+   Time Entry Redesign — "Workshop Timecard"
+   ============================================================ */
+
+/* ─── Shared section color ─── */
+:root {
+  --section-bg: #2a2a2a;
+}
+
+/* ─── Friday Reminder ─── */
+.te-reminder {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+  margin-bottom: 12px;
+  background: #fef3c7;
+  border: 1px solid #f59e0b;
+  border-radius: var(--radius);
+  font-size: 13px;
+  color: #92400e;
+}
+.te-reminder-x {
+  background: none;
+  border: none;
+  font-size: 18px;
+  line-height: 1;
+  color: #92400e;
+  cursor: pointer;
+  padding: 0 2px;
+  opacity: 0.6;
+}
+.te-reminder-x:hover { opacity: 1; }
+
+/* ─── Combined Today + Progress Card ─── */
+.te-today {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px;
+  margin-bottom: 12px;
+  color: var(--text);
+  box-shadow: var(--shadow);
+}
+
+.te-today-info {
+  flex: 1;
+}
+
+.te-today-eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 3px;
+}
+
+.te-today-day {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--text);
+}
+
+.te-today-date {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 1px;
+}
+
+.te-today-divider {
+  width: 28px;
+  height: 2px;
+  background: var(--accent);
+  margin: 10px 0;
+  border-radius: 1px;
+}
+
+.te-today-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.te-status-logged {
+  color: #16a34a;
+}
+
+.te-today-check {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.te-today-hrs {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.te-today-times {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.te-status-pending {
+  color: var(--text-muted);
+}
+
+.te-today-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+  animation: te-pulse 2s ease-in-out infinite;
+}
+
+@keyframes te-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.75); }
+}
+
+.te-status-off {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* Stats row (bottom half of combined card) */
+.te-today-stats {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-top: 14px;
+  margin-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.te-ring-wrap {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  flex-shrink: 0;
+}
+
+.te-ring {
+  width: 50px;
+  height: 50px;
+  transform: rotate(-90deg);
+}
+
+.te-ring-bg {
+  fill: none;
+  stroke: var(--bg-input);
+  stroke-width: 4.5;
+}
+
+.te-ring-fill {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 4.5;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.te-ring-pct {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.te-stats-col {
+  flex: 1;
+  min-width: 0;
+}
+
+.te-stats-hours {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.te-stats-sub {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.te-stats-rest {
+  text-align: center;
+  flex-shrink: 0;
+  padding-left: 14px;
+  border-left: 1px solid var(--border);
+}
+
+.te-stats-rest-num {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.te-stats-rest-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+/* ─── Period Status Badge ─── */
+.te-period-status {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.te-period-status.open {
+  background: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.te-period-status.closed {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* ─── Calendar ─── */
+.te-cal {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.te-cal-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: var(--section-bg);
+  color: #fff;
+}
+
+.te-cal-head-range {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.te-cal-head-sep {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.te-cal-head-pay {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.te-cal-head .te-period-status {
+  margin-left: auto;
+}
+
+.te-cal-body {
+  padding: 14px;
+}
+
+.te-cal-dow {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 6px;
+}
+
+.te-cal-dow-cell {
+  text-align: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 4px 0;
+}
+
+.te-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.te-cal-cell {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+  position: relative;
+  border: 2px solid transparent;
+  min-height: 44px;
+}
+
+.te-cal-cell:hover:not(.te-cal-empty) {
+  background: var(--bg-hover);
+}
+
+.te-cal-empty {
+  cursor: default;
+}
+
+.te-cal-num {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.te-cal-hrs {
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+  margin-top: 2px;
+  font-variant-numeric: tabular-nums;
+}
+
+.te-cal-wknd {
+  opacity: 0.3;
+}
+
+.te-cal-wknd .te-cal-num {
+  font-weight: 400;
+}
+
+.te-cal-today {
+  border-color: var(--accent);
+  background: var(--accent-light);
+}
+
+.te-cal-logged {
+  background: #22c55e;
+  color: #fff;
+}
+
+.te-cal-logged:hover {
+  background: #16a34a !important;
+}
+
+.te-cal-logged .te-cal-num {
+  color: #fff;
+}
+
+.te-cal-logged .te-cal-hrs {
+  color: rgba(255,255,255,0.8);
+}
+
+.te-cal-sched {
+  background: #f0f7ff;
+}
+
+.te-cal-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #93c5fd;
+  margin-top: 3px;
+}
+
+.te-cal-sel {
+  border-color: var(--text-secondary) !important;
+}
+
+/* ─── Content Layout (calendar + entry) ─── */
+.te-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ─── Entry Panel ─── */
+.te-entry {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  animation: te-slide-up 0.2s ease;
+}
+
+@keyframes te-slide-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.te-entry-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  background: var(--section-bg);
+  color: #fff;
+}
+
+.te-entry-date {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.te-entry-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: #22c55e;
+  color: #fff;
+}
+
+.te-time-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 0;
+  padding: 20px 20px 0;
+}
+
+.te-time-block {
+  flex: 1;
+  text-align: center;
+}
+
+.te-time-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.te-time-input {
+  width: 100%;
+  padding: 12px 8px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-family: var(--font);
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  background: var(--bg-input);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  font-variant-numeric: tabular-nums;
+  -webkit-appearance: none;
+}
+
+.te-time-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(255, 204, 0, 0.15);
+}
+
+.te-time-arrow {
+  width: 36px;
+  text-align: center;
+  font-size: 20px;
+  color: var(--text-muted);
+  padding-bottom: 14px;
+  flex-shrink: 0;
+}
+
+.te-hours-bar {
+  margin: 16px 20px;
+  padding: 10px 16px;
+  background: rgba(255, 204, 0, 0.1);
+  border-radius: 10px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.te-hours-bar strong {
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
+}
+
+.te-hours-detail {
+  display: block;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.te-error {
+  font-size: 13px;
+  color: var(--error);
+  padding: 0 20px;
+  margin-bottom: 12px;
+}
+
+.te-actions {
+  display: flex;
+  gap: 8px;
+  padding: 0 20px 20px;
+  align-items: center;
+}
+
+.te-btn {
+  padding: 11px 20px;
+  border: none;
+  border-radius: 10px;
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.te-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.te-btn-save {
+  background: var(--accent);
+  color: var(--accent-text);
+  flex: 1;
+}
+
+.te-btn-save:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+.te-btn-del {
+  background: none;
+  color: var(--error);
+  padding: 11px 14px;
+}
+
+.te-btn-del:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.08);
+}
+
+/* ============================================================
+   Desktop responsive
+   ============================================================ */
+@media (min-width: 640px) {
   .app-shell {
     border-left: 1px solid var(--border);
     border-right: 1px solid var(--border);
     box-shadow: 0 0 40px rgba(0, 0, 0, 0.05);
   }
+
+  .app-header { padding: 14px 24px; }
+  .app-main { padding: 24px; padding-bottom: 80px; }
+
+  /* Side-by-side layout for time entry */
+  .time-entry-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+
+  /* Admin: two-column employee grid */
+  .admin-employee-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .admin-employee-grid .card { margin-bottom: 0; }
+
+  /* Wider KPIs */
+  .admin-kpis { gap: 12px; }
+  .admin-kpi { padding: 16px; }
+  .admin-kpi-value { font-size: 26px; }
+
+  /* Wider cards */
+  .card { padding: 20px; }
+
+  /* Bottom nav becomes a sticky top tab bar on desktop */
+  .bottom-nav {
+    position: sticky;
+    top: 48px;
+    left: 0;
+    transform: none;
+    border-top: none;
+    border-bottom: 1px solid var(--border);
+    padding: 0;
+    gap: 0;
+    width: 100%;
+    max-width: none;
+  }
+
+  .bottom-nav-item {
+    flex-direction: row;
+    gap: 6px;
+    padding: 12px 20px;
+    font-size: 13px;
+    border-bottom: 2px solid transparent;
+  }
+
+  .bottom-nav-item.active {
+    border-bottom-color: var(--accent);
+  }
+
+  .bottom-nav-icon { width: 18px; height: 18px; }
+
+  .app-main { padding-bottom: 24px; }
+
+  /* Login stays centered */
+  .login-card { max-width: 400px; }
+
+  /* Day rows get more space */
+  .day-label { width: 100px; font-size: 14px; }
+  .day-times { font-size: 14px; }
+  .day-hours { width: 55px; }
+
+  /* Calendar cells bigger on desktop */
+  .cal-cell { min-height: 72px; padding: 6px; }
+  .cal-date { font-size: 14px; }
+  .cal-hours { font-size: 13px; }
+  .cal-times { font-size: 10px; }
+
+  /* Schedule chips wider */
+  .schedule-day-chip { width: 42px; height: 36px; font-size: 12px; }
+
+  /* Toast wider */
+  .toast-container { max-width: 600px; }
+
+  /* Time Entry: combined card side-by-side */
+  .te-today {
+    flex-direction: row;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .te-today-stats {
+    border-top: none;
+    margin-top: 0;
+    padding-top: 0;
+    padding-left: 24px;
+    border-left: 1px solid var(--border);
+  }
+
+  .te-today-divider { margin: 10px 0; }
+
+  /* Calendar + entry side by side */
+  .te-content {
+    flex-direction: row;
+    align-items: start;
+  }
+
+  .te-content > * { flex: 1; min-width: 0; }
+
+  .te-cal-cell { min-height: 56px; }
+  .te-cal-num { font-size: 14px; }
+  .te-cal-hrs { font-size: 10px; }
+  .te-time-input { font-size: 20px; padding: 14px 10px; }
+}
+
+@media (min-width: 960px) {
+  .app-shell { max-width: 1100px; }
+  .bottom-nav { max-width: 1100px; }
+  .app-main { padding: 32px; padding-bottom: 32px; }
+
+  .admin-employee-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
 }

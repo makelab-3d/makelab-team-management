@@ -56,7 +56,7 @@ CREATE TRIGGER trg_validate_work_date
   FOR EACH ROW
   EXECUTE FUNCTION validate_work_date_in_period();
 
--- 3. Prevent edits when pay period is locked/approved/synced
+-- 3. Prevent edits when pay period is closed
 CREATE OR REPLACE FUNCTION prevent_edit_locked_period()
 RETURNS TRIGGER AS $$
 DECLARE
@@ -69,8 +69,8 @@ BEGIN
   SELECT status INTO pp_status
   FROM pay_periods WHERE id = pp_id;
 
-  IF pp_status IN ('locked', 'approved', 'synced') THEN
-    RAISE EXCEPTION 'Cannot modify time entries for a % pay period', pp_status;
+  IF pp_status = 'closed' THEN
+    RAISE EXCEPTION 'Cannot modify time entries for a closed pay period';
   END IF;
 
   RETURN COALESCE(NEW, OLD);
@@ -101,7 +101,7 @@ BEGIN
 
     INSERT INTO pay_periods (start_date, end_date, status)
     VALUES (period_start, period_end,
-            CASE WHEN period_end < CURRENT_DATE THEN 'synced' ELSE 'open' END)
+            CASE WHEN period_end < CURRENT_DATE THEN 'closed' ELSE 'open' END)
     ON CONFLICT (start_date) DO NOTHING;
   END LOOP;
 END;

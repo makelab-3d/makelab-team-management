@@ -13,13 +13,13 @@ export function AuthProvider({ children }) {
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
-      if (session?.user) fetchEmployee(session.user.id)
+      if (session?.user) fetchEmployee(session.user.id, session.user.email)
       else setLoading(false)
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null)
-      if (session?.user) fetchEmployee(session.user.id)
+      if (session?.user) fetchEmployee(session.user.id, session.user.email)
       else {
         setEmployee(null)
         setLoading(false)
@@ -29,12 +29,35 @@ export function AuthProvider({ children }) {
     return () => subscription.unsubscribe()
   }, [])
 
-  async function fetchEmployee(authId) {
-    const { data, error } = await supabase
+  async function fetchEmployee(authId, email) {
+    // Try by auth_id first
+    let { data, error } = await supabase
       .from('employees')
       .select('*')
       .eq('auth_id', authId)
       .single()
+
+    // Fallback: match by email and link the auth_id
+    if ((error || !data) && email) {
+      const res = await supabase
+        .from('employees')
+        .select('*')
+        .eq('email', email)
+        .single()
+
+      if (res.data) {
+        // Auto-link auth_id if not set
+        if (!res.data.auth_id) {
+          await supabase
+            .from('employees')
+            .update({ auth_id: authId })
+            .eq('id', res.data.id)
+          res.data.auth_id = authId
+        }
+        data = res.data
+        error = null
+      }
+    }
 
     if (error || !data) {
       setEmployee(null)
@@ -44,10 +67,10 @@ export function AuthProvider({ children }) {
     setLoading(false)
   }
 
-  async function signIn(email) {
-    const { error } = await supabase.auth.signInWithOtp({
+  async function signIn(email, password) {
+    const { error } = await supabase.auth.signInWithPassword({
       email,
-      options: { emailRedirectTo: window.location.origin }
+      password,
     })
     return { error }
   }
@@ -58,8 +81,12 @@ export function AuthProvider({ children }) {
     setEmployee(null)
   }
 
+  const adminEmail = import.meta.env.VITE_ADMIN_EMAIL
+  const isAdmin = employee?.role === 'admin' || employee?.email === adminEmail
+  const isManager = employee?.role === 'manager'
+
   return (
-    <AuthContext.Provider value={{ user, employee, loading, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, employee, loading, signIn, signOut, isAdmin, isManager }}>
       {children}
     </AuthContext.Provider>
   )

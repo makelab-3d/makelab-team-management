@@ -5,6 +5,8 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 )
 
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'christina@makelab.com'
+
 export default async function handler(req) {
   if (req.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {
@@ -16,21 +18,33 @@ export default async function handler(req) {
   const { type, payload } = await req.json()
 
   if (type === 'approval_request') {
-    // Notify Christina that a period is ready for approval
-    if (!process.env.SLACK_WEBHOOK_URL) {
-      return new Response(JSON.stringify({ error: 'SLACK_WEBHOOK_URL not configured' }), {
+    // DM Christina that a period is ready for approval
+    if (!process.env.SLACK_BOT_TOKEN) {
+      return new Response(JSON.stringify({ error: 'SLACK_BOT_TOKEN not configured' }), {
         status: 500,
         headers: { 'Content-Type': 'application/json' },
       })
     }
 
-    await fetch(process.env.SLACK_WEBHOOK_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        text: `:clock3: *Pay period ${payload.start_date} to ${payload.end_date} is ready for approval*\n${payload.employee_count} employee(s) submitted timesheets.\n<${process.env.URL || 'https://time.makelab.com'}/#/admin|Review now>`,
-      }),
-    })
+    const { data: admin } = await supabase
+      .from('employees')
+      .select('slack_user_id')
+      .eq('email', ADMIN_EMAIL)
+      .single()
+
+    if (admin?.slack_user_id) {
+      await fetch('https://slack.com/api/chat.postMessage', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${process.env.SLACK_BOT_TOKEN}`,
+          'Content-Type': 'application/json; charset=utf-8',
+        },
+        body: JSON.stringify({
+          channel: admin.slack_user_id,
+          text: `:clock3: *Pay period ${payload.start_date} to ${payload.end_date} is ready for approval*\n${payload.employee_count} employee(s) submitted timesheets.\n<${process.env.URL || 'https://time.makelab.com'}/#/admin|Review now>`,
+        }),
+      })
+    }
   }
 
   if (type === 'employee_reminder') {

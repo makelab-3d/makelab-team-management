@@ -13,6 +13,11 @@ CREATE TABLE IF NOT EXISTS employees (
   rate        NUMERIC(10,2) NOT NULL,
   method      TEXT DEFAULT 'direct_deposit',
   slack_user_id TEXT,
+  schedule    JSONB DEFAULT '{"days":[1,2,3,4,5],"start_time":"09:00","end_time":"17:00"}',
+  department  TEXT DEFAULT 'General',
+  employee_type TEXT NOT NULL DEFAULT 'hourly'
+                CHECK (employee_type IN ('hourly', 'salary', 'contract', 'intern')),
+  fixed_amount NUMERIC(10,2),
   is_active   BOOLEAN NOT NULL DEFAULT true,
   created_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at  TIMESTAMPTZ NOT NULL DEFAULT now()
@@ -27,7 +32,7 @@ CREATE TABLE IF NOT EXISTS pay_periods (
   start_date  DATE NOT NULL UNIQUE,
   end_date    DATE NOT NULL UNIQUE,
   status      TEXT NOT NULL DEFAULT 'open'
-                CHECK (status IN ('open', 'locked', 'approved', 'synced')),
+                CHECK (status IN ('open', 'closed')),
   locked_at   TIMESTAMPTZ,
   approved_at TIMESTAMPTZ,
   approved_by UUID REFERENCES employees(id),

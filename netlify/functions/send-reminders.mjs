@@ -1,30 +1,45 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-)
-
+const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL
+const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || process.env.VITE_ADMIN_EMAIL || 'christina@makelab.com'
 const APP_URL = process.env.URL || 'https://time.makelab.com'
 const FROM_EMAIL = process.env.REMINDER_FROM_EMAIL || 'noreply@makelab.com'
 const FROM_NAME = 'Makelab Time Tracker'
 
-// Scheduled function: runs Fridays at 9 AM ET (0 14 * * 5 UTC)
-// 1. Finds hourly employees with zero hours logged for any open period
-// 2. Sends Slack DM + Mandrill email to each
-// 3. Sends Christina a summary via Slack webhook
-export default async function handler() {
-  // Safety guard: only run on Fridays (in case cron misfires)
-  const now = new Date()
-  if (now.getUTCDay() !== 5) {
-    return new Response(JSON.stringify({ skipped: 'not Friday' }), {
-      headers: { 'Content-Type': 'application/json' },
-    })
+function jsonResponse(body, status = 200) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { 'Content-Type': 'application/json' },
+  })
+}
+
+// On-demand admin endpoint: POST to send reminders now
+export default async function handler(req) {
+  if (req.method !== 'POST') {
+    return jsonResponse({ error: 'Method not allowed' }, 405)
   }
 
-  const todayStr = now.toISOString().split('T')[0]
+  if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
+    return jsonResponse({ error: 'Server misconfigured' }, 500)
+  }
 
-  // Find all open periods (current or past that haven't been closed yet)
+  const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY)
+
+  // Verify admin
+  const authHeader = req.headers.get('authorization')
+  if (!authHeader?.startsWith('Bearer ')) {
+    return jsonResponse({ error: 'Unauthorized' }, 401)
+  }
+  const token = authHeader.slice(7)
+  const { data: { user } } = await supabase.auth.getUser(token)
+  if (user?.email !== ADMIN_EMAIL) {
+    return jsonResponse({ error: 'Unauthorized' }, 401)
+  }
+
+  const todayStr = new Date().toISOString().split('T')[0]
+
+  // Find all open periods that have started
   const { data: periods } = await supabase
     .from('pay_periods')
     .select('*')
@@ -32,9 +47,7 @@ export default async function handler() {
     .lte('start_date', todayStr)
 
   if (!periods?.length) {
-    return new Response(JSON.stringify({ ok: true, reminders: 0 }), {
-      headers: { 'Content-Type': 'application/json' },
-    })
+    return jsonResponse({ ok: true, message: 'No open periods found', reminders: 0 })
   }
 
   // Get all active employees who track hours
@@ -47,18 +60,15 @@ export default async function handler() {
   const hourlyEmployees = employees || []
 
   let totalReminders = 0
-  const allMissing = [] // for Christina's summary
+  const results = []
 
   for (const period of periods) {
-    // Get employee IDs who have at least one entry
     const { data: entries } = await supabase
       .from('time_entries')
       .select('employee_id')
       .eq('pay_period_id', period.id)
 
     const submittedIds = new Set((entries || []).map(e => e.employee_id))
-
-    // Employees with zero entries for this period
     const needsReminder = hourlyEmployees.filter(emp => !submittedIds.has(emp.id))
 
     for (const emp of needsReminder) {
@@ -111,37 +121,28 @@ export default async function handler() {
       }
 
       totalReminders++
-      allMissing.push({
+      results.push({
         name: emp.full_name,
         period: `${period.start_date} to ${period.end_date}`,
-        slackSent,
-        emailSent,
+        slack: slackSent,
+        email: emailSent,
       })
     }
   }
 
-  // DM Christina a summary (uses admin's slack_user_id from DB)
-  if (process.env.SLACK_BOT_TOKEN) {
-    const adminEmail = process.env.ADMIN_EMAIL || 'christina@makelab.com'
+  // DM admin a summary
+  if (process.env.SLACK_BOT_TOKEN && results.length > 0) {
     const { data: admin } = await supabase
       .from('employees')
       .select('slack_user_id')
-      .eq('email', adminEmail)
+      .eq('email', ADMIN_EMAIL)
       .single()
 
     if (admin?.slack_user_id) {
-      let message = `:calendar: *Friday Hour Reminder Summary*\n`
-      if (allMissing.length === 0) {
-        message += `:white_check_mark: All employees have logged hours for all open periods!`
-      } else {
-        message += `${allMissing.length} reminder(s) sent:\n`
-        for (const m of allMissing) {
-          const channels = [
-            m.slackSent ? 'Slack' : null,
-            m.emailSent ? 'email' : null,
-          ].filter(Boolean).join(' + ')
-          message += `• ${m.name} — ${m.period}${channels ? ` (${channels})` : ' (no contact method)'}\n`
-        }
+      let message = `:mega: *Manual Reminder Sent*\n${results.length} reminder(s):\n`
+      for (const r of results) {
+        const channels = [r.slack ? 'Slack' : null, r.email ? 'email' : null].filter(Boolean).join(' + ')
+        message += `• ${r.name} — ${r.period}${channels ? ` (${channels})` : ''}\n`
       }
       try {
         await fetch('https://slack.com/api/chat.postMessage', {
@@ -158,9 +159,7 @@ export default async function handler() {
     }
   }
 
-  return new Response(JSON.stringify({ ok: true, reminders: totalReminders }), {
-    headers: { 'Content-Type': 'application/json' },
-  })
+  return jsonResponse({ ok: true, reminders: totalReminders, results })
 }
 
 function buildEmailHtml(name, period) {

@@ -13,7 +13,28 @@ export default async function handler(req) {
     })
   }
 
-  const { pay_period_id } = await req.json()
+  const body = await req.json()
+
+  // List all employees (for admin overview)
+  if (body.action === 'list-employees') {
+    const { data, error } = await supabase
+      .from('employees')
+      .select('*')
+      .order('full_name')
+
+    if (error) {
+      return new Response(JSON.stringify({ error: error.message }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    }
+
+    return new Response(JSON.stringify({ employees: data || [] }), {
+      headers: { 'Content-Type': 'application/json' },
+    })
+  }
+
+  const { pay_period_id } = body
   if (!pay_period_id) {
     return new Response(JSON.stringify({ error: 'pay_period_id required' }), {
       status: 400,

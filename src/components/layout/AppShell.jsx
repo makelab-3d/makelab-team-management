@@ -6,7 +6,7 @@ export default function AppShell() {
     <div className="app-shell">
       <header className="app-header">
         <span className="app-brand">MAKELAB</span>
-        <span className="app-title">Time Tracker</span>
+        <span className="app-title">Team Management</span>
       </header>
       <main className="app-main">
         <Outlet />

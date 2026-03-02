@@ -32,9 +32,15 @@ export function formatDateShort(dateStr) {
   return `${months[date.getMonth()]} ${date.getDate()}`
 }
 
-/** Format YYYY-MM-DD as "Mar 2 - Mar 15" (period range) */
+/** Format YYYY-MM-DD as "Mar 2 - Mar 15, 2026" (period range with year) */
 export function formatPeriodRange(startDate, endDate) {
-  return `${formatDateShort(startDate)} - ${formatDateShort(endDate)}`
+  const endYear = new Date(endDate + 'T00:00:00').getFullYear()
+  return `${formatDateShort(startDate)} - ${formatDateShort(endDate)}, ${endYear}`
+}
+
+/** Get year from YYYY-MM-DD */
+export function getYear(dateStr) {
+  return new Date(dateStr + 'T00:00:00').getFullYear()
 }
 
 /** Check if a date string is today */

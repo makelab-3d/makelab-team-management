@@ -10,9 +10,11 @@ export function usePayPeriod() {
   const fetchPeriods = useCallback(async () => {
     if (!supabase) { setLoading(false); return }
 
+    const today = formatDate(new Date())
     const { data, error } = await supabase
       .from('pay_periods')
       .select('*')
+      .lte('start_date', today)
       .order('start_date', { ascending: false })
 
     if (error) {
@@ -22,13 +24,9 @@ export function usePayPeriod() {
     }
 
     setAllPeriods(data || [])
-
-    // Find the current open period (today falls within it)
-    const today = formatDate(new Date())
     const current = (data || []).find(p =>
       p.status === 'open' && p.start_date <= today && p.end_date >= today
     )
-    // If no open period contains today, find the most recent open one
     setCurrentPeriod(current || (data || []).find(p => p.status === 'open') || null)
     setLoading(false)
   }, [])
