@@ -1,11 +1,14 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 
+const APP_SLUG = 'team-management'
+
 const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [employee, setEmployee] = useState(null)
+  const [hasAppAccess, setHasAppAccess] = useState(false)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -22,6 +25,7 @@ export function AuthProvider({ children }) {
       if (session?.user) fetchEmployee(session.user.id, session.user.email)
       else {
         setEmployee(null)
+        setHasAppAccess(false)
         setLoading(false)
       }
     })
@@ -30,14 +34,12 @@ export function AuthProvider({ children }) {
   }, [])
 
   async function fetchEmployee(authId, email) {
-    // Try by auth_id first
     let { data, error } = await supabase
       .from('employees')
       .select('*')
       .eq('auth_id', authId)
       .single()
 
-    // Fallback: match by email and link the auth_id
     if ((error || !data) && email) {
       const res = await supabase
         .from('employees')
@@ -46,7 +48,6 @@ export function AuthProvider({ children }) {
         .single()
 
       if (res.data) {
-        // Auto-link auth_id if not set
         if (!res.data.auth_id) {
           await supabase
             .from('employees')
@@ -61,17 +62,46 @@ export function AuthProvider({ children }) {
 
     if (error || !data) {
       setEmployee(null)
-    } else {
-      setEmployee(data)
+      setHasAppAccess(false)
+      setLoading(false)
+      return
     }
+
+    setEmployee(data)
+    await checkAppAccess(data)
     setLoading(false)
   }
 
+  async function checkAppAccess(emp) {
+    if (emp.role === 'admin') {
+      setHasAppAccess(true)
+      return
+    }
+
+    const { data: override } = await supabase
+      .from('app_permissions')
+      .select('has_access')
+      .eq('employee_id', emp.id)
+      .eq('app_slug', APP_SLUG)
+      .single()
+
+    if (override) {
+      setHasAppAccess(override.has_access)
+      return
+    }
+
+    const { data: roleDefault } = await supabase
+      .from('role_app_defaults')
+      .select('has_access')
+      .eq('role', emp.role || 'employee')
+      .eq('app_slug', APP_SLUG)
+      .single()
+
+    setHasAppAccess(roleDefault?.has_access ?? false)
+  }
+
   async function signIn(email, password) {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
     return { error }
   }
 
@@ -79,6 +109,7 @@ export function AuthProvider({ children }) {
     await supabase.auth.signOut()
     setUser(null)
     setEmployee(null)
+    setHasAppAccess(false)
   }
 
   const adminEmail = import.meta.env.VITE_ADMIN_EMAIL
@@ -86,7 +117,7 @@ export function AuthProvider({ children }) {
   const isManager = employee?.role === 'manager'
 
   return (
-    <AuthContext.Provider value={{ user, employee, loading, signIn, signOut, isAdmin, isManager }}>
+    <AuthContext.Provider value={{ user, employee, loading, signIn, signOut, isAdmin, isManager, hasAppAccess }}>
       {children}
     </AuthContext.Provider>
   )

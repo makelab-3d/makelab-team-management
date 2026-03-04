@@ -8,6 +8,7 @@ import Profile from './pages/Profile'
 import AdminApproval from './pages/AdminApproval'
 import Employees from './pages/Employees'
 import Schedule from './pages/Schedule'
+import AppAccess from './pages/AppAccess'
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
             <Route path="admin" element={<AdminApproval />} />
             <Route path="employees" element={<Employees />} />
             <Route path="schedule" element={<Schedule />} />
+            <Route path="access" element={<AppAccess />} />
           </Route>
         </Routes>
       </HashRouter>
