@@ -73,7 +73,8 @@ export function AuthProvider({ children }) {
   }
 
   async function checkAppAccess(emp) {
-    if (emp.role === 'admin') {
+    const adminEmail = import.meta.env.VITE_ADMIN_EMAIL
+    if (emp.role === 'admin' || emp.email === adminEmail) {
       setHasAppAccess(true)
       return
     }
@@ -83,7 +84,7 @@ export function AuthProvider({ children }) {
       .select('has_access')
       .eq('employee_id', emp.id)
       .eq('app_slug', APP_SLUG)
-      .single()
+      .maybeSingle()
 
     if (override) {
       setHasAppAccess(override.has_access)
@@ -95,9 +96,9 @@ export function AuthProvider({ children }) {
       .select('has_access')
       .eq('role', emp.role || 'employee')
       .eq('app_slug', APP_SLUG)
-      .single()
+      .maybeSingle()
 
-    setHasAppAccess(roleDefault?.has_access ?? false)
+    setHasAppAccess(roleDefault?.has_access ?? true)
   }
 
   async function signIn(email, password) {
