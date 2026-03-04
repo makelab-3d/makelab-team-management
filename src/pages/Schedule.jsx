@@ -234,27 +234,46 @@ export default function Schedule() {
             <strong>{dailyWorkers.length}</strong> scheduled
           </div>
 
-          {deptNames.map(dept => {
-            const deptEmps = dailyByDept[dept]
-            if (!deptEmps?.length) return null
-            return (
-              <div key={dept} className="card mt-12">
-                <div className="card-title" style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span>{dept}</span>
-                  <span>{deptEmps.length}</span>
-                </div>
-                {deptEmps.map(emp => (
-                  <div key={emp.id} className="sched-daily-emp">
-                    <div className="sched-emp-inline">
-                      <span className="sched-emp-name">{emp.full_name}</span>
-                      {emp.title && <span className="sched-emp-pill">{emp.title}</span>}
-                    </div>
-                    <span className="sched-daily-time">{getShiftLabel(emp)}</span>
-                  </div>
-                ))}
-              </div>
-            )
-          })}
+          <div className="card" style={{ overflowX: 'auto', padding: 0 }}>
+            <table className="sched-grid">
+              <thead>
+                <tr>
+                  <th className="sched-dept-col" />
+                  <th className="sched-name-col">Employee</th>
+                  <th className="sched-title-col">Title</th>
+                  <th>Shift</th>
+                  <th>Type</th>
+                </tr>
+              </thead>
+              <tbody>
+                {deptNames.map(dept => {
+                  const deptEmps = dailyByDept[dept]
+                  if (!deptEmps?.length) return null
+                  return deptEmps.map((emp, empIdx) => (
+                    <tr key={emp.id} style={{ background: deptColorMap[dept] }}>
+                      {empIdx === 0 && (
+                        <td className="sched-dept-label" rowSpan={deptEmps.length} style={{ background: deptColorMap[dept] }}>
+                          <span>{dept}</span>
+                        </td>
+                      )}
+                      <td className="sched-name-col" style={{ background: deptColorMap[dept] }}>
+                        <span className="sched-emp-name">{emp.full_name}</span>
+                      </td>
+                      <td className="sched-title-col" style={{ background: deptColorMap[dept] }}>
+                        {emp.title && <span className="sched-emp-pill">{emp.title}</span>}
+                      </td>
+                      <td style={{ textAlign: 'center' }}>
+                        <div className="sched-shift">{getShiftLabel(emp)}</div>
+                      </td>
+                      <td style={{ textAlign: 'center' }}>
+                        <span className="sched-shift">{(emp.employee_type || 'hourly').charAt(0).toUpperCase() + (emp.employee_type || 'hourly').slice(1)}</span>
+                      </td>
+                    </tr>
+                  ))
+                })}
+              </tbody>
+            </table>
+          </div>
 
           {dailyWorkers.length === 0 && (
             <div className="card mt-12 text-center text-muted">
