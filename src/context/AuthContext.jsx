@@ -1,6 +1,9 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 
+const SESSION_TIMEOUT = 5 * 60 * 60 * 1000  // 5 hours
+const SESSION_KEY = 'makelab_session_start'
+
 const APP_SLUG = 'team-management'
 
 const AuthContext = createContext(null)
@@ -16,7 +19,10 @@ export function AuthProvider({ children }) {
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
-      if (session?.user) fetchEmployee(session.user.id, session.user.email)
+      if (session?.user) {
+        if (!localStorage.getItem(SESSION_KEY)) localStorage.setItem(SESSION_KEY, Date.now().toString())
+        fetchEmployee(session.user.id, session.user.email)
+      }
       else setLoading(false)
     })
 
@@ -30,7 +36,17 @@ export function AuthProvider({ children }) {
       }
     })
 
-    return () => subscription.unsubscribe()
+    // Check session timeout every minute
+    function checkSessionExpiry() {
+      const start = localStorage.getItem(SESSION_KEY)
+      if (start && Date.now() - parseInt(start) > SESSION_TIMEOUT) {
+        signOut()
+      }
+    }
+    checkSessionExpiry()
+    const expiryInterval = setInterval(checkSessionExpiry, 60000)
+
+    return () => { subscription.unsubscribe(); clearInterval(expiryInterval) }
   }, [])
 
   async function fetchEmployee(authId, email) {
@@ -103,10 +119,12 @@ export function AuthProvider({ children }) {
 
   async function signIn(email, password) {
     const { error } = await supabase.auth.signInWithPassword({ email, password })
+    if (!error) localStorage.setItem(SESSION_KEY, Date.now().toString())
     return { error }
   }
 
   async function signOut() {
+    localStorage.removeItem(SESSION_KEY)
     await supabase.auth.signOut()
     setUser(null)
     setEmployee(null)
