@@ -12,52 +12,68 @@ export default function LoginPage() {
     e.preventDefault()
     setError(null)
     setSubmitting(true)
-
     const { error: err } = await signIn(email, password)
     setSubmitting(false)
-
-    if (err) {
-      setError(err.message)
-    }
+    if (err) setError(err.message)
   }
 
   return (
-    <div className="login-page">
-      <div className="login-card">
-        <div className="login-logo">MAKELAB</div>
-        <h1 className="login-title">Team Management</h1>
-
-        <form onSubmit={handleSubmit} className="login-form">
-          <label htmlFor="email" className="login-label">Email</label>
+    <div style={styles.page}>
+      <div style={styles.card}>
+        <img src="https://d3k81ch9hvuctc.cloudfront.net/company/SSAACi/images/629fa4cf-df38-4cb4-b46d-0aff3d6c9eed.png" alt="Makelab" style={styles.logo} />
+        <h1 style={styles.title}>Team Management</h1>
+        <form onSubmit={handleSubmit} style={styles.form}>
+          <label style={styles.label}>Email</label>
           <input
-            id="email"
             type="email"
             value={email}
             onChange={e => setEmail(e.target.value)}
             placeholder="you@makelab.com"
             required
             autoFocus
-            className="input"
+            style={styles.input}
           />
-
-          <label htmlFor="password" className="login-label" style={{ marginTop: 12 }}>Password</label>
+          <label style={{ ...styles.label, marginTop: 12 }}>Password</label>
           <input
-            id="password"
             type="password"
             value={password}
             onChange={e => setPassword(e.target.value)}
             placeholder="Enter your password"
             required
-            className="input"
+            style={styles.input}
           />
-
-          {error && <p className="login-error">{error}</p>}
-
-          <button type="submit" disabled={submitting} className="btn btn-primary btn-full" style={{ marginTop: 16 }}>
+          {error && <p style={styles.error}>{error}</p>}
+          <button type="submit" disabled={submitting} style={styles.button}>
             {submitting ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
       </div>
     </div>
   )
+}
+
+const styles = {
+  page: {
+    minHeight: '100dvh',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 24,
+    background: '#f5f5f5',
+    fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+  },
+  card: { width: '100%', maxWidth: 360, textAlign: 'center' },
+  logo: { width: 120, height: 'auto', marginBottom: 16, display: 'block', marginLeft: 'auto', marginRight: 'auto' },
+  title: { fontSize: 22, fontWeight: 400, marginBottom: 32, color: '#222' },
+  form: { textAlign: 'left' },
+  label: { display: 'block', fontSize: 13, fontWeight: 500, color: '#666', marginBottom: 6 },
+  input: {
+    width: '100%', padding: '10px 12px', fontSize: 14, border: '1px solid #ddd', background: '#fff', color: '#222',
+    borderRadius: 4, marginBottom: 16, outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit',
+  },
+  error: { fontSize: 13, color: '#e53e3e', marginBottom: 12 },
+  button: {
+    width: '100%', padding: '12px 16px', fontSize: 14, fontWeight: 500, color: '#222',
+    background: '#ffcc00', border: 'none', borderRadius: 4, cursor: 'pointer', marginTop: 8, fontFamily: 'inherit',
+  },
 }
