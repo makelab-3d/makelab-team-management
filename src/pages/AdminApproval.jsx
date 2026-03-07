@@ -8,7 +8,17 @@ import { getHolidaySet, getHolidayName } from '../lib/holidays'
 const PAGE_SIZE = 5
 
 export default function AdminApproval() {
-  const { employee } = useAuth()
+  const { employee, isAdmin } = useAuth()
+
+  // Admin only
+  if (!isAdmin) {
+    return (
+      <div className="card text-center mt-16">
+        <h2>Access Denied</h2>
+        <p className="text-muted">Only admins can view timesheets.</p>
+      </div>
+    )
+  }
   const [periods, setPeriods] = useState([])
   const [periodStats, setPeriodStats] = useState({}) // { periodId: { employees, hours, cost } }
   const [selectedPeriod, setSelectedPeriod] = useState(null)

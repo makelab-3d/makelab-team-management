@@ -19,6 +19,16 @@ const ROLES = ['admin', 'manager', 'employee']
 
 export default function AppAccess() {
   const { isAdmin, user } = useAuth()
+
+  // Admin only
+  if (!isAdmin) {
+    return (
+      <div className="card text-center mt-16">
+        <h2>Access Denied</h2>
+        <p className="text-muted">Only admins can manage app access.</p>
+      </div>
+    )
+  }
   const [employees, setEmployees] = useState([])
   const [permissions, setPermissions] = useState([])
   const [defaults, setDefaults] = useState([])
