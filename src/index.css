@@ -27,6 +27,7 @@
   --radius-sm: 6px;
   --shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   --font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --header-height: 52px;
 }
 
 
@@ -193,7 +194,8 @@ a { color: var(--accent-text); text-decoration: none; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.75rem 1.5rem;
+  height: var(--header-height);
+  padding: 0 1.5rem;
   background: #000000;
   position: sticky;
   top: 0;
@@ -2189,7 +2191,7 @@ a { color: var(--accent-text); text-decoration: none; }
     box-shadow: 0 0 40px rgba(0, 0, 0, 0.05);
   }
 
-  .app-header { padding: 14px 24px; }
+  .app-header { padding: 0 24px; }
   .app-main { padding: 24px; padding-bottom: 80px; }
 
   /* Side-by-side layout for time entry */
@@ -2220,7 +2222,7 @@ a { color: var(--accent-text); text-decoration: none; }
   /* Bottom nav becomes a sticky top tab bar on desktop */
   .bottom-nav {
     position: sticky;
-    top: 48px;
+    top: var(--header-height);
     left: 0;
     transform: none;
     border-top: none;
@@ -2303,7 +2305,7 @@ a { color: var(--accent-text); text-decoration: none; }
   .app-shell {
     max-width: none;
     margin-left: 200px;
-    padding-top: 52px;
+    padding-top: var(--header-height);
     border-left: none;
     border-right: none;
     box-shadow: none;
@@ -2327,7 +2329,7 @@ a { color: var(--accent-text); text-decoration: none; }
   /* Sidebar nav */
   .bottom-nav {
     position: fixed;
-    top: 52px;
+    top: var(--header-height);
     left: 0;
     bottom: 0;
     width: 200px;
