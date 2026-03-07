@@ -155,15 +155,25 @@
 [data-theme="dark"] .sched-grid td {
   border-color: var(--border);
 }
-[data-theme="dark"] .sched-grid tbody tr {
-  background: rgba(255, 255, 255, 0.03) !important;
+[data-theme="dark"] .sched-grid tbody tr[style*="f3e8ff"],
+[data-theme="dark"] .sched-grid tbody td[style*="f3e8ff"],
+[data-theme="dark"] .sched-dept-label[style*="f3e8ff"] {
+  background: rgba(168, 85, 247, 0.12) !important;
 }
-[data-theme="dark"] .sched-grid tbody td,
-[data-theme="dark"] .sched-dept-label {
-  background: transparent !important;
+[data-theme="dark"] .sched-grid tbody tr[style*="dbeafe"],
+[data-theme="dark"] .sched-grid tbody td[style*="dbeafe"],
+[data-theme="dark"] .sched-dept-label[style*="dbeafe"] {
+  background: rgba(59, 130, 246, 0.12) !important;
 }
-[data-theme="dark"] .sched-grid tbody td.sched-today-col {
-  background: rgba(255, 255, 255, 0.06) !important;
+[data-theme="dark"] .sched-grid tbody tr[style*="fef9c3"],
+[data-theme="dark"] .sched-grid tbody td[style*="fef9c3"],
+[data-theme="dark"] .sched-dept-label[style*="fef9c3"] {
+  background: rgba(234, 179, 8, 0.12) !important;
+}
+[data-theme="dark"] .sched-grid tbody tr[style*="f1f5f9"],
+[data-theme="dark"] .sched-grid tbody td[style*="f1f5f9"],
+[data-theme="dark"] .sched-dept-label[style*="f1f5f9"] {
+  background: rgba(148, 163, 184, 0.10) !important;
 }
 [data-theme="dark"] .sched-grid th {
   border-color: var(--border);
