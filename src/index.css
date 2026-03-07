@@ -755,6 +755,8 @@ a { color: var(--accent-text); text-decoration: none; }
 .cell-clickable:hover { background: rgba(255, 204, 0, 0.25); }
 .te-th-sel { background: rgba(255, 204, 0, 0.15); }
 .te-td-sel { background: rgba(255, 204, 0, 0.1); outline: 2px solid var(--accent); outline-offset: -2px; }
+.cell-holiday { position: relative; opacity: 0.5; }
+.cell-holiday-dot { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: #e53e3e; margin-left: 3px; vertical-align: middle; }
 
 /* Period list stats */
 .period-stats {

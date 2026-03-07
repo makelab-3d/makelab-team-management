@@ -5,6 +5,7 @@ import { useTimeEntries } from '../hooks/useTimeEntries'
 import { supabase } from '../lib/supabase'
 import { getPeriodDays, formatPeriodRange, formatDateShort, formatDayShort, formatDate, isToday, isWeekend, today } from '../lib/dates'
 import { computeHours, formatHours, formatTime12 } from '../lib/hours'
+import { getHolidaySet, getHolidayName } from '../lib/holidays'
 
 const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
@@ -131,8 +132,10 @@ function PeriodDetail({ employee, period, isCurrent, onBack }) {
 
   const schedule = employee?.schedule || { days: [1, 2, 3, 4, 5], start_time: '09:00', end_time: '17:00' }
   const scheduledDays = new Set(schedule.days || [])
+  const holidayDates = getHolidaySet(period.start_date, period.end_date)
 
   function isScheduled(dateStr) {
+    if (holidayDates.has(dateStr)) return false
     const day = new Date(dateStr + 'T00:00:00').getDay()
     return scheduledDays.has(day)
   }
@@ -282,7 +285,7 @@ function PeriodDetail({ employee, period, isCurrent, onBack }) {
                     <span>Not yet logged</span>
                   </div>
                 ) : (
-                  <div className="te-today-status te-status-off">Day off</div>
+                  <div className="te-today-status te-status-off">{getHolidayName(todayStr) || 'Day off'}</div>
                 )
               ) : (
                 <div className="te-today-status te-status-off">Outside current period</div>
@@ -325,16 +328,21 @@ function PeriodDetail({ employee, period, isCurrent, onBack }) {
           <thead>
             <tr>
               <th className="sticky-col">Day</th>
-              {periodDays.map(d => (
-                <th
-                  key={d}
-                  className={selectedDate === d ? 'te-th-sel' : ''}
-                  onClick={() => selectDay(d)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  {formatDayShort(d)}
-                </th>
-              ))}
+              {periodDays.map(d => {
+                const hName = getHolidayName(d)
+                return (
+                  <th
+                    key={d}
+                    className={`${selectedDate === d ? 'te-th-sel' : ''}${hName ? ' cell-holiday' : ''}`}
+                    onClick={() => selectDay(d)}
+                    style={{ cursor: 'pointer' }}
+                    title={hName || undefined}
+                  >
+                    {formatDayShort(d)}
+                    {hName && <span className="cell-holiday-dot" />}
+                  </th>
+                )
+              })}
               <th>Total</th>
             </tr>
           </thead>

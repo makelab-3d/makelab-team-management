@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabase'
 import { formatPeriodRange, formatDayShort, formatDate, getYear, getPeriodDays } from '../lib/dates'
 import { formatHours, formatTime12, timeToMinutes } from '../lib/hours'
+import { getHolidaySet, getHolidayName } from '../lib/holidays'
 
 const PAGE_SIZE = 5
 
@@ -271,6 +272,7 @@ export default function AdminApproval() {
   // ── Period detail view ──────────────────────────────────────
   if (selectedPeriod) {
     const days = getPeriodDays(selectedPeriod.start_date, selectedPeriod.end_date)
+    const holidayDates = getHolidaySet(selectedPeriod.start_date, selectedPeriod.end_date)
 
     return (
       <>
@@ -322,9 +324,15 @@ export default function AdminApproval() {
               <thead>
                 <tr>
                   <th className="sticky-col">Employee</th>
-                  {days.map(d => (
-                    <th key={d}>{formatDayShort(d)}</th>
-                  ))}
+                  {days.map(d => {
+                    const hName = getHolidayName(d)
+                    return (
+                      <th key={d} className={hName ? 'cell-holiday' : ''} title={hName || undefined}>
+                        {formatDayShort(d)}
+                        {hName && <span className="cell-holiday-dot" />}
+                      </th>
+                    )
+                  })}
                   <th>Total</th>
                   <th>Cost</th>
                 </tr>
