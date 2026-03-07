@@ -230,6 +230,23 @@ export default function AdminApproval() {
     setShowAddEmployee(false)
   }
 
+  async function deleteCellEntry() {
+    if (!editingCell || editingCell.isNew) return
+    setMessage(null)
+    try {
+      const { error } = await supabase
+        .from('time_entries')
+        .delete()
+        .eq('id', editingCell.entryId)
+      if (error) throw error
+      setMessage({ type: 'success', text: 'Entry deleted' })
+      setEditingCell(null)
+      fetchEmployeeData()
+    } catch (err) {
+      setMessage({ type: 'error', text: err.message })
+    }
+  }
+
   async function saveCellEdit() {
     setMessage(null)
     try {
@@ -454,6 +471,10 @@ export default function AdminApproval() {
               )
             })()}
             <div className="edit-actions">
+              {!editingCell.isNew && (
+                <button className="btn btn-ghost btn-sm" style={{ color: 'var(--error)' }} onClick={deleteCellEntry}>Delete</button>
+              )}
+              <div style={{ flex: 1 }} />
               <button className="btn btn-ghost btn-sm" onClick={() => setEditingCell(null)}>Cancel</button>
               <button className="btn btn-primary btn-sm" onClick={saveCellEdit}>{editingCell.isNew ? 'Add Entry' : 'Save'}</button>
             </div>
